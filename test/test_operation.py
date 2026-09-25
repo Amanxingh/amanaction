@@ -1,4 +1,4 @@
-from src.mathoperatioin import add,sub
+from src.mathoperation import add,sub
 
 
 def test_add():
