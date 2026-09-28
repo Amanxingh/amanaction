@@ -2,10 +2,10 @@ FROM python:3.8-slim
 
 WORKDIR /app
 
-COPY requirments.txt .
+COPY requirements.txt .
 
-RUN pip install --no-cache-dir -r requirments.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY src ./src
+COPY . .
 
-CMD ["python", "-c", "print('Python application container is running')"]
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "10000"]
