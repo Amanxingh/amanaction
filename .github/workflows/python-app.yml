@@ -11,9 +11,9 @@ on:
 
 jobs:
 
-  # --------------------
+  # ====================
   # TEST JOB
-  # --------------------
+  # ====================
   test:
     runs-on: ubuntu-latest
 
@@ -39,9 +39,9 @@ jobs:
         run: python -m pytest
 
 
-  # --------------------
+  # ====================
   # BUILD JOB
-  # --------------------
+  # ====================
   build:
     needs: test
     runs-on: ubuntu-latest
@@ -50,11 +50,6 @@ jobs:
 
       - name: Check out code
         uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.8'
 
       - name: Create build directory
         run: |
@@ -68,11 +63,37 @@ jobs:
 
       - name: Check build
         run: |
-          echo "Build contents:"
           ls -lh
           ls -lh build/
 
-      - name: Upload build artifact
+      # Temporarily store the build package
+      # so the next job can use it
+      - name: Upload build package
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-package
+          path: python-app.tar.gz
+
+
+  # ====================
+  # ARTIFACT JOB
+  # ====================
+  artifact:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Download build package
+        uses: actions/download-artifact@v4
+        with:
+          name: build-package
+
+      - name: Check downloaded artifact
+        run: |
+          ls -lh
+
+      - name: Upload final artifact
         uses: actions/upload-artifact@v4
         with:
           name: python-app
