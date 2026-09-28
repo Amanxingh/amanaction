@@ -119,3 +119,18 @@ jobs:
 
       - name: Push Docker image
         run: docker push amansqw123/python-app:latest
+
+
+  # -------------------------
+  # JOB 6: DEPLOY TO RENDER
+  # -------------------------
+  deploy:
+    needs: push
+    runs-on: ubuntu-latest
+
+    # Deploy only after successful Docker Hub push
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Deploy to Render
+        run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
