@@ -66,8 +66,6 @@ jobs:
           ls -lh
           ls -lh build/
 
-      # Temporarily store the build package
-      # so the next job can use it
       - name: Upload build package
         uses: actions/upload-artifact@v4
         with:
@@ -98,3 +96,31 @@ jobs:
         with:
           name: python-app
           path: python-app.tar.gz
+
+
+  # ====================
+  # DOCKER JOB
+  # ====================
+  docker:
+    needs: artifact
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Check Docker version
+        run: docker --version
+
+      - name: Build Docker image
+        run: |
+          docker build -t python-app:latest .
+
+      - name: Check Docker image
+        run: |
+          docker images
+
+      - name: Test Docker image
+        run: |
+          docker run --rm python-app:latest
